@@ -105,7 +105,7 @@ main_directory = Physical, Virtual
 subdirectory = Network Device, Compute Node, Storage
 location = Office1, Server Room1, Server Room2
 ```
-
+The main_directory and subdirectory options are usable to determine the directory of the host configuration files inside /etc/icinga2/conf.d/hosts directory
 ## Notes
 
 - **SSH Security**: The app uses `sshpass` to handle password-based SSH connections. It is recommended to switch to SSH key-based authentication for better security.
@@ -120,6 +120,4 @@ location = Office1, Server Room1, Server Room2
 - **Not Found Error**: If the app shows a "Not Found" error in the browser, ensure that the Flask app is running and that you are accessing the correct URL (`http://<server-ip>:5000/`).
 - **Permission Issues**: Make sure that the Flask app and the Icinga server have the necessary permissions to create directories and transfer files.
 
-## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
