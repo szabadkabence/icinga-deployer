@@ -45,6 +45,12 @@ First, ensure you have `Flask` installed. You can install it via `pip`:
 pip install Flask
 ```
 
+Install sshpass (required for password-based SSH file transfer):
+
+```bash
+sudo apt-get install sshpass
+```
+
 ### 3. Create a `config.ini` File
 
 The app requires a `config.ini` file to store sensitive SSH credentials and default options for dropdowns. Create a `config.ini` in the root directory of the project with the following format:
