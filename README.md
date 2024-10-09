@@ -8,6 +8,7 @@ This is a Flask web application designed to generate and deploy configuration fi
 - Generates Icinga host configuration files.
 - Securely transfers configuration files to the Icinga server using SSH.
 - Allows the user to restart the Icinga service remotely.
+- Dropdowns for OS, Server Type, Main Directory, Subdirectory, and Location are customizable via `config.ini`.
 
 ## Project Structure
 
@@ -45,13 +46,20 @@ pip install Flask
 
 ### 3. Create a `config.ini` File
 
-The app requires a `config.ini` file to store sensitive SSH credentials. Create a `config.ini` in the root directory of the project with the following format:
+The app requires a `config.ini` file to store sensitive SSH credentials and default options for dropdowns. Create a `config.ini` in the root directory of the project with the following format:
 
 ```ini
 [ssh]
 username = deployer
 password = yourpassword
 host = icinga-server-hostname-or-ip
+
+[defaults]
+operating_system = Linux, Windows, MacOS
+server_type = Physical, Virtual
+main_directory = Physical, Virtual
+subdirectory = Network Device, PVE, Storage
+location = Hauszmann, Kozma, BCW
 ```
 
 ### 4. Run the Application
@@ -84,6 +92,19 @@ You should see the Icinga Config Deployer interface where you can input host det
 2. **Restart Icinga Service**:
    - After generating the configuration, you can restart the Icinga service by clicking the "Restart Service" button.
 
+## Customizing Dropdown Options
+
+You can modify the dropdown options for **Operating System**, **Server Type**, **Main Directory**, **Subdirectory**, and **Location** via the `config.ini` file. Just list multiple values separated by commas. For example:
+
+```ini
+[defaults]
+operating_system = Linux, Windows, MacOS
+server_type = Physical, Virtual
+main_directory = Physical, Virtual
+subdirectory = Network Device, PVE, Storage
+location = Hauszmann, Kozma, BCW
+```
+
 ## Notes
 
 - **SSH Security**: The app uses `sshpass` to handle password-based SSH connections. It is recommended to switch to SSH key-based authentication for better security.
@@ -98,3 +119,6 @@ You should see the Icinga Config Deployer interface where you can input host det
 - **Not Found Error**: If the app shows a "Not Found" error in the browser, ensure that the Flask app is running and that you are accessing the correct URL (`http://<server-ip>:5000/`).
 - **Permission Issues**: Make sure that the Flask app and the Icinga server have the necessary permissions to create directories and transfer files.
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
