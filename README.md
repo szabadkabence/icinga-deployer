@@ -68,7 +68,7 @@ location =
 You can run the application using the following command:
 
 ```bash
-python app.py
+python3 app.py
 ```
 
 By default, the Flask application will be accessible at `http://0.0.0.0:5000`.
