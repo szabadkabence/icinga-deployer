@@ -50,8 +50,9 @@
         <div class="form-group">
             <label for="os_type">Operating System:</label>
             <select class="form-control" id="os_type" name="os_type">
-                <option value="Linux">Linux</option>
-                <option value="Windows">Windows</option>
+                {% for os in default_os_list %}
+                <option value="{{ os.strip() }}">{{ os.strip() }}</option>
+                {% endfor %}
                 <option value="custom">Custom...</option>
             </select>
             <input type="text" class="form-control mt-2" id="custom_os_type" name="custom_os_type" style="display:none;" placeholder="Enter custom OS type">
@@ -61,8 +62,9 @@
         <div class="form-group">
             <label for="server_type">Server Type:</label>
             <select class="form-control" id="server_type" name="server_type">
-                <option value="physical">Physical</option>
-                <option value="virtual">Virtual</option>
+                {% for server_type in default_server_type_list %}
+                <option value="{{ server_type.strip() }}">{{ server_type.strip() }}</option>
+                {% endfor %}
                 <option value="custom">Custom...</option>
             </select>
             <input type="text" class="form-control mt-2" id="custom_server_type" name="custom_server_type" style="display:none;" placeholder="Enter custom server type">
@@ -71,8 +73,9 @@
         <div class="form-group">
             <label for="main_dir">Main Directory:</label>
             <select class="form-control" id="main_dir" name="main_dir">
-                <option value="physical">Physical</option>
-                <option value="virtual">Virtual</option>
+                {% for main_dir in default_main_dir_list %}
+                <option value="{{ main_dir.strip() }}">{{ main_dir.strip() }}</option>
+                {% endfor %}
             </select>
         </div>
 
@@ -80,9 +83,9 @@
         <div class="form-group">
             <label for="sub_dir">Subdirectory:</label>
             <select class="form-control" id="sub_dir" name="sub_dir">
-                <option value="networkdevice">Network Device</option>
-                <option value="pve">PVE</option>
-                <option value="storage">Storage</option>
+                {% for sub_dir in default_sub_dir_list %}
+                <option value="{{ sub_dir.strip() }}">{{ sub_dir.strip() }}</option>
+                {% endfor %}
                 <option value="custom">Custom...</option>
             </select>
             <input type="text" class="form-control mt-2" id="custom_sub_dir" name="custom_sub_dir" style="display:none;" placeholder="Enter custom subdirectory">
@@ -91,9 +94,9 @@
         <div class="form-group">
             <label for="location">Location:</label>
             <select class="form-control" id="location" name="location">
-                <option value="Hauszmann">Hauszmann</option>
-                <option value="Kozma">Kozma</option>
-                <option value="BCW">BCW</option>
+                {% for location in default_location_list %}
+                <option value="{{ location.strip() }}">{{ location.strip() }}</option>
+                {% endfor %}
                 <option value="custom">Custom...</option>
             </select>
             <input type="text" class="form-control mt-2" id="custom_location" name="custom_location" style="display:none;" placeholder="Enter custom location">
@@ -108,12 +111,12 @@
             <input class="form-check-input" type="checkbox" id="hardware_raid" name="hardware_raid" value="true">
             <label class="form-check-label" for="hardware_raid">Hardware RAID</label>
         </div>
-	<div class="form-group d-flex justify-content-between mt-3">
-        	<button type="submit" class="btn btn-primary mt-3">Generate Config</button>
-		<button type="button" class="btn btn-danger" id="restart-btn">Restart Service</button>
-	</div>
+        
+        <div class="form-group d-flex justify-content-between mt-3">
+            <button type="submit" class="btn btn-primary mt-3">Generate Config</button>
+            <button type="button" class="btn btn-danger" id="restart-btn">Restart Service</button>
+        </div>
     </form>
-
 </div>
 
 <!-- Notification Bubble -->
@@ -171,24 +174,23 @@
         });
     });
 
-// AJAX form submission for Restart Service
-document.getElementById('restart-btn').addEventListener('click', function () {
-    fetch('/restart_service', {
-        method: 'POST'
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.status === 'success') {
-            showNotification(result.message, 'success'); // Show success message
-        } else {
-            showNotification(result.message, 'error'); // Show error message
-        }
-    })
-    .catch(error => {
-        showNotification('Error restarting service', 'error'); // Show error message
+    // AJAX form submission for Restart Service
+    document.getElementById('restart-btn').addEventListener('click', function () {
+        fetch('/restart_service', {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.status === 'success') {
+                showNotification(result.message, 'success'); // Show success message
+            } else {
+                showNotification(result.message, 'error'); // Show error message
+            }
+        })
+        .catch(error => {
+            showNotification('Error restarting service', 'error'); // Show error message
+        });
     });
-});
-
 
     function showNotification(message, type) {
         const notification = document.getElementById('notification');
