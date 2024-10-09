@@ -20,10 +20,24 @@ ssh_username = config['ssh']['username']
 ssh_password = config['ssh']['password']
 ssh_host = config['ssh']['host']
 
+# Fetch default form values from config.ini (as lists)
+default_os_list = config['defaults']['operating_system'].split(',')
+default_server_type_list = config['defaults']['server_type'].split(',')
+default_main_dir_list = config['defaults']['main_directory'].split(',')
+default_sub_dir_list = config['defaults']['subdirectory'].split(',')
+default_location_list = config['defaults']['location'].split(',')
+
 # Define the root route
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template(
+        'index.html', 
+        default_os_list=default_os_list, 
+        default_server_type_list=default_server_type_list,
+        default_main_dir_list=default_main_dir_list,
+        default_sub_dir_list=default_sub_dir_list,
+        default_location_list=default_location_list
+    )
 
 # Function to create the local config file
 def create_local_config_file(hostname, ip_address, os_type, server_type, location, software_raid, hardware_raid, main_dir, sub_dir):
