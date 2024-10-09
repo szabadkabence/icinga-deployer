@@ -1,3 +1,4 @@
+![image](https://github.com/user-attachments/assets/25b5cd45-0672-4ae7-a5c3-6f5c640230ec)
 
 # Icinga Config Deployer
 
