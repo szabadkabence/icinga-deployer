@@ -55,11 +55,11 @@ password = yourpassword
 host = icinga-server-hostname-or-ip
 
 [defaults]
-operating_system = Linux, Windows, MacOS
-server_type = Physical, Virtual
-main_directory = Physical, Virtual
-subdirectory = Network Device, PVE, Storage
-location = Hauszmann, Kozma, BCW
+operating_system = 
+server_type = 
+main_directory = 
+subdirectory = 
+location = 
 ```
 
 ### 4. Run the Application
@@ -98,11 +98,11 @@ You can modify the dropdown options for **Operating System**, **Server Type**, *
 
 ```ini
 [defaults]
-operating_system = Linux, Windows, MacOS
+operating_system = Linux, Windows
 server_type = Physical, Virtual
 main_directory = Physical, Virtual
-subdirectory = Network Device, PVE, Storage
-location = Hauszmann, Kozma, BCW
+subdirectory = Network Device, Compute Node, Storage
+location = Office1, Server Room1, Server Room2
 ```
 
 ## Notes
