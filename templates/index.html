@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icinga Deployer</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #663399, #3b5998);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            color: white;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center">Icinga Deployer</h2>
+    <form id="config-form" action="/generate" method="POST">
+        <div class="form-group">
+            <label for="hostname">Hostname:</label>
+            <input type="text" class="form-control" id="hostname" name="hostname" required>
+        </div>
+
+        <div class="form-group">
+            <label for="ip_address">IP Address:</label>
+            <input type="text" class="form-control" id="ip_address" name="ip_address" required>
+        </div>
+
+        <!-- Operating System Dropdown with Custom Option -->
+        <div class="form-group">
+            <label for="os_type">Operating System:</label>
+            <select class="form-control" id="os_type" name="os_type">
+                <option value="Linux">Linux</option>
+                <option value="Windows">Windows</option>
+                <option value="custom">Custom...</option>
+            </select>
+            <input type="text" class="form-control mt-2" id="custom_os_type" name="custom_os_type" style="display:none;" placeholder="Enter custom OS type">
+        </div>
+
+        <!-- Server Type Dropdown with Custom Option -->
+        <div class="form-group">
+            <label for="server_type">Server Type:</label>
+            <select class="form-control" id="server_type" name="server_type">
+                <option value="physical">Physical</option>
+                <option value="virtual">Virtual</option>
+                <option value="custom">Custom...</option>
+            </select>
+            <input type="text" class="form-control mt-2" id="custom_server_type" name="custom_server_type" style="display:none;" placeholder="Enter custom server type">
+        </div>
+
+        <div class="form-group">
+            <label for="main_dir">Main Directory:</label>
+            <select class="form-control" id="main_dir" name="main_dir">
+                <option value="physical">Physical</option>
+                <option value="virtual">Virtual</option>
+            </select>
+        </div>
+
+        <!-- Subdirectory Dropdown with Custom Option -->
+        <div class="form-group">
+            <label for="sub_dir">Subdirectory:</label>
+            <select class="form-control" id="sub_dir" name="sub_dir">
+                <option value="networkdevice">Network Device</option>
+                <option value="pve">PVE</option>
+                <option value="storage">Storage</option>
+                <option value="custom">Custom...</option>
+            </select>
+            <input type="text" class="form-control mt-2" id="custom_sub_dir" name="custom_sub_dir" style="display:none;" placeholder="Enter custom subdirectory">
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location:</label>
+            <select class="form-control" id="location" name="location">
+                <option value="Hauszmann">Hauszmann</option>
+                <option value="Kozma">Kozma</option>
+                <option value="BCW">BCW</option>
+                <option value="custom">Custom...</option>
+            </select>
+            <input type="text" class="form-control mt-2" id="custom_location" name="custom_location" style="display:none;" placeholder="Enter custom location">
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="software_raid" name="software_raid" value="true">
+            <label class="form-check-label" for="software_raid">Software RAID</label>
+        </div>
+
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="hardware_raid" name="hardware_raid" value="true">
+            <label class="form-check-label" for="hardware_raid">Hardware RAID</label>
+        </div>
+	<div class="form-group d-flex justify-content-between mt-3">
+        	<button type="submit" class="btn btn-primary mt-3">Generate Config</button>
+		<button type="button" class="btn btn-danger" id="restart-btn">Restart Service</button>
+	</div>
+    </form>
+
+</div>
+
+<!-- Notification Bubble -->
+<div id="notification"></div>
+
+<script>
+    document.getElementById('os_type').addEventListener('change', function () {
+        if (this.value === 'custom') {
+            document.getElementById('custom_os_type').style.display = 'block';
+        } else {
+            document.getElementById('custom_os_type').style.display = 'none';
+        }
+    });
+
+    document.getElementById('server_type').addEventListener('change', function () {
+        if (this.value === 'custom') {
+            document.getElementById('custom_server_type').style.display = 'block';
+        } else {
+            document.getElementById('custom_server_type').style.display = 'none';
+        }
+    });
+
+    document.getElementById('location').addEventListener('change', function () {
+        if (this.value === 'custom') {
+            document.getElementById('custom_location').style.display = 'block';
+        } else {
+            document.getElementById('custom_location').style.display = 'none';
+        }
+    });
+
+    document.getElementById('sub_dir').addEventListener('change', function () {
+        if (this.value === 'custom') {
+            document.getElementById('custom_sub_dir').style.display = 'block';
+        } else {
+            document.getElementById('custom_sub_dir').style.display = 'none';
+        }
+    });
+
+    // AJAX form submission to prevent redirect
+    document.getElementById('config-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+
+        fetch('/generate', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(result => {
+            showNotification(result, 'success'); // Show green notification on success
+        })
+        .catch(error => {
+            showNotification(error, 'error'); // Show red notification on error
+        });
+    });
+
+// AJAX form submission for Restart Service
+document.getElementById('restart-btn').addEventListener('click', function () {
+    fetch('/restart_service', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.status === 'success') {
+            showNotification(result.message, 'success'); // Show success message
+        } else {
+            showNotification(result.message, 'error'); // Show error message
+        }
+    })
+    .catch(error => {
+        showNotification('Error restarting service', 'error'); // Show error message
+    });
+});
+
+
+    function showNotification(message, type) {
+        const notification = document.getElementById('notification');
+        notification.style.display = 'block';
+        notification.innerHTML = message;
+
+        if (type === 'success') {
+            notification.style.backgroundColor = 'green';
+        } else {
+            notification.style.backgroundColor = 'red';
+        }
+
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 5000); // Hide after 5 seconds
+    }
+</script>
+
+</body>
+</html>
